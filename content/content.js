@@ -3,6 +3,9 @@
     let currentVideo = "";
     let currentVideoBookmarks = [];
 
+    // Константы для тултипа
+    const TOOLTIP_TEXT = 'Добавить заметку';
+
     const fetchBookmarks = () => {
         return new Promise((resolve) => {
             chrome.storage.sync.get([currentVideo], (obj) => {
@@ -46,27 +49,60 @@
         currentVideoBookmarks = await fetchBookmarks();
 
         if (!bookmarkBtnExists) {
+            //Делаем обертку для правильного отображения тултипа
+            const buttonWrapper = document.createElement('div');
+            buttonWrapper.className = 'bookmark-wrapper';
+
             const bookmarkBtn = document.createElement("button");
 
+            // Создаем иконку SVG
+            // const svgIcon = document.createElement('svg');
+            // svgIcon.setAttribute('width', '24');
+            // svgIcon.setAttribute('height', '24');
+            // svgIcon.setAttribute('viewBox', '0 0 24 24');
+            // svgIcon.setAttribute('fill', '#fff');
+            // const path = document.createElement('path');
+            // path.setAttribute('d', 'M12 5L12 19M5 12L19 12');
+            // path.setAttribute('stroke', 'currentColor');
+            // path.setAttribute('stroke-width', '4');
+            // path.setAttribute('stroke-linecap', 'round');
+            // path.setAttribute('fill', '#fff');
+            // svgIcon.appendChild(path);
+            // bookmarkBtn.appendChild(svgIcon);
+
             const svgIconString = `
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <svg width="24" height="24" viewBox="0 0 24 24">
                 <!-- The Plus Sign Path -->
                 <path d="M12 5L12 19M5 12L19 12" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
                 </svg>
             `;  
-    
             bookmarkBtn.innerHTML = svgIconString;
 
-            bookmarkBtn.className = "ytp-bookmark-btn " + "ytp-button " + "bookmark-btn";
-            bookmarkBtn.title = "Добавить заметку";
+            bookmarkBtn.classList.add("ytp-button", "bookmark-btn")
+            // bookmarkBtn.title = TOOLTIP_TEXT;
+
             //Попытка сделать стиль подсказки как в соседних кнопках
-            bookmarkBtn.setAttribute("aria-label", "Добавить заметку");
-            bookmarkBtn.setAttribute("data-tooltip-title", "Добавить заметку");
+            bookmarkBtn.setAttribute("aria-label", TOOLTIP_TEXT);
+            bookmarkBtn.setAttribute("data-tooltip-title", TOOLTIP_TEXT);
+
+            // Создаем тултип
+            const tooltip = document.createElement('div');
+            tooltip.classList.add('ytp-tooltip', 'ytp-text', 'bookmark-tooltip');
+
+            const tooltipText = document.createElement('span');
+            tooltipText.className = 'ytp-tooltip-text';
+            tooltipText.textContent = TOOLTIP_TEXT
+
+            tooltip.appendChild(tooltipText);
+
+            buttonWrapper.appendChild(bookmarkBtn);
+            buttonWrapper.appendChild(tooltip);
+            
 
             youtubeRightControls = document.getElementsByClassName("ytp-right-controls-left")[0];
             youtubePlayer = document.getElementsByClassName("video-stream")[0];
 
-            youtubeRightControls.appendChild(bookmarkBtn);
+            youtubeRightControls.appendChild(buttonWrapper);
             bookmarkBtn.addEventListener("click", addNewBookmarkEventHandler);
         }
     };

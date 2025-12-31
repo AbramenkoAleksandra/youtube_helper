@@ -1,0 +1,38 @@
+.bookmark-wrapper {
+    position: relative;
+    display: inline-block;
+    height: 40px;
+}
+        
+.bookmark-tooltip {
+    position: absolute;
+    z-index: 2301;
+    bottom: 100%;
+    left: -50%;
+    margin-bottom: 23px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none; /* игнорируем события мыши */
+    white-space: nowrap;
+    visibility: hidden; /* Сначала скрыт */
+}
+
+.bookmark-wrapper .ytp-tooltip-text {
+    position: absolute;
+    display: block;
+    background-color: rgba(0, 0, 0, 0.3);
+    font-size: 12.2px;
+    padding: 5px 9px;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.bookmark-wrapper:hover .bookmark-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+
+
